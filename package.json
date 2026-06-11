@@ -9,7 +9,7 @@
     "eject": "react-scripts eject"
   },
   "engines": {
-    "node": ">=18"
+    "node": "20.x"
   },
   "keywords": [],
   "author": "",
