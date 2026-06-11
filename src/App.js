@@ -76,8 +76,12 @@ export default function App() {
       window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (reducedMotion) {
-      // Ensure content is visible for reduced motion users.
+    const coarsePointer =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+
+    if (reducedMotion || coarsePointer) {
       document.querySelectorAll('[data-reveal="true"]').forEach((el) => {
         el.style.opacity = "1";
         el.style.transform = "none";
@@ -92,16 +96,16 @@ export default function App() {
       const delay = parseFloat(el.getAttribute("data-reveal-delay") || "0");
       gsap.fromTo(
         el,
-        { opacity: 0, y: 26 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
+          duration: 0.65,
           ease: "power3.out",
           delay,
           scrollTrigger: {
             trigger: el,
-            start: "top 82%",
+            start: "top 85%",
             toggleActions: "play none none none",
           },
         }

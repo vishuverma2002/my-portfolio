@@ -41,7 +41,6 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeId, setActiveId] = useState("");
 
-  // Scroll progress bar + condensed nav state.
   useEffect(() => {
     function onScroll() {
       const doc = document.documentElement;
@@ -54,7 +53,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Highlight the section currently in view.
   useEffect(() => {
     const sections = navItems
       .map((item) => document.getElementById(item.id))
@@ -74,6 +72,31 @@ export default function Navbar() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    document.body.classList.toggle("navOpen", menuOpen);
+    return () => document.body.classList.remove("navOpen");
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    function onKeyDown(e) {
+      if (e.key === "Escape") setMenuOpen(false);
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [menuOpen]);
+
+  useEffect(() => {
+    function onResize() {
+      if (window.innerWidth >= 1024) setMenuOpen(false);
+    }
+
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   function handleNavClick(e, id) {
     e.preventDefault();
     setMenuOpen(false);
@@ -83,81 +106,102 @@ export default function Navbar() {
   }
 
   return (
-    <header className={`${styles.header} ${scrolled ? styles.headerScrolled : ""}`}>
-      <div className={styles.progressTrack} aria-hidden="true">
-        <div className={styles.progressBar} style={{ width: `${progress}%` }} />
-      </div>
+    <>
+      <header className={`${styles.header} ${scrolled ? styles.headerScrolled : ""}`}>
+        <div className={styles.progressTrack} aria-hidden="true">
+          <div className={styles.progressBar} style={{ width: `${progress}%` }} />
+        </div>
 
-      <div className={styles.inner}>
-        <a className={styles.brand} href="#top" onClick={(e) => handleNavClick(e, "top")}>
-          <span className={styles.brandMark} aria-hidden="true">
-            {profile.name.split(" ").map((w) => w[0]).join("")}
-          </span>
-          <span className={styles.brandText}>
-            <span className={styles.brandName}>{profile.name}</span>
-            <span className={styles.brandRole}>{profile.role}</span>
-          </span>
-        </a>
+        <div className={styles.inner}>
+          <a className={styles.brand} href="#top" onClick={(e) => handleNavClick(e, "top")}>
+            <span className={styles.brandMark} aria-hidden="true">
+              {profile.name.split(" ").map((w) => w[0]).join("")}
+            </span>
+            <span className={styles.brandText}>
+              <span className={styles.brandName}>{profile.name}</span>
+              <span className={styles.brandRole}>{profile.role}</span>
+            </span>
+          </a>
 
-        <nav className={styles.nav} aria-label="Primary">
+          <nav className={styles.nav} aria-label="Primary">
+            {navItems.map((item) => (
+              <a
+                key={item.id}
+                className={`${styles.navLink} ${activeId === item.id ? styles.navLinkActive : ""}`}
+                href={`#${item.id}`}
+                onClick={(e) => handleNavClick(e, item.id)}
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className={styles.actions}>
+            <button
+              type="button"
+              className={styles.themeButton}
+              onClick={toggleTheme}
+              aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
+            >
+              {isDark ? <SunIcon /> : <MoonIcon />}
+            </button>
+
+            <a className={styles.ctaButton} href={`mailto:${profile.email}`}>
+              Hire Me
+            </a>
+
+            <button
+              type="button"
+              className={`${styles.menuButton} ${menuOpen ? styles.menuButtonOpen : ""}`}
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-nav-menu"
+            >
+              <span className={styles.menuIcon} aria-hidden="true">
+                {menuOpen ? "✕" : "☰"}
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <div
+          id="mobile-nav-menu"
+          className={`${styles.mobileMenu} ${menuOpen ? styles.mobileMenuOpen : ""}`}
+          role="dialog"
+          aria-label="Mobile navigation"
+          aria-hidden={!menuOpen}
+        >
           {navItems.map((item) => (
             <a
               key={item.id}
-              className={`${styles.navLink} ${activeId === item.id ? styles.navLinkActive : ""}`}
-              href={`#${item.id}`}
-              onClick={(e) => handleNavClick(e, item.id)}
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
-
-        <div className={styles.actions}>
-          <button
-            type="button"
-            className={styles.themeButton}
-            onClick={toggleTheme}
-            aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
-          >
-            {isDark ? <SunIcon /> : <MoonIcon />}
-          </button>
-
-          <a
-            className={styles.ctaButton}
-            href={`mailto:${profile.email}`}
-          >
-            Hire Me
-          </a>
-
-          <button
-            type="button"
-            className={styles.menuButton}
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen}
-          >
-            <span className={styles.menuIcon} aria-hidden="true">
-              {menuOpen ? "✕" : "☰"}
-            </span>
-          </button>
-        </div>
-      </div>
-
-      {menuOpen ? (
-        <div className={styles.mobileMenu} role="dialog" aria-label="Mobile navigation">
-          {navItems.map((item, idx) => (
-            <a
-              key={item.id}
               className={`${styles.mobileLink} ${activeId === item.id ? styles.mobileLinkActive : ""}`}
-              style={{ animationDelay: `${idx * 45}ms` }}
               href={`#${item.id}`}
               onClick={(e) => handleNavClick(e, item.id)}
+              tabIndex={menuOpen ? 0 : -1}
             >
               {item.label}
             </a>
           ))}
+          <a
+            className={styles.mobileCta}
+            href={`mailto:${profile.email}`}
+            onClick={() => setMenuOpen(false)}
+            tabIndex={menuOpen ? 0 : -1}
+          >
+            Hire Me — Get In Touch
+          </a>
         </div>
-      ) : null}
-    </header>
+      </header>
+
+      <button
+        type="button"
+        className={`${styles.mobileBackdrop} ${menuOpen ? styles.mobileBackdropVisible : ""}`}
+        aria-label="Close menu"
+        aria-hidden={!menuOpen}
+        tabIndex={menuOpen ? 0 : -1}
+        onClick={() => setMenuOpen(false)}
+      />
+    </>
   );
 }

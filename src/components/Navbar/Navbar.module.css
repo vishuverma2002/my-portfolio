@@ -10,6 +10,7 @@
   -webkit-backdrop-filter: blur(14px) saturate(160%);
   animation: slideDown 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
   transition: border-color var(--transition), box-shadow var(--transition);
+  padding-top: env(safe-area-inset-top, 0);
 }
 
 .headerScrolled {
@@ -33,24 +34,28 @@
 }
 
 .inner {
-  max-width: 1140px;
+  width: 100%;
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding: 12px 20px;
+  padding: 10px var(--section-x);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
 }
 
 .brandMark {
   width: 38px;
   height: 38px;
+  min-width: 38px;
   border-radius: 12px;
   display: inline-flex;
   align-items: center;
@@ -68,23 +73,28 @@
   display: flex;
   flex-direction: column;
   gap: 1px;
+  min-width: 0;
 }
 
 .brandName {
   font-weight: 700;
   letter-spacing: -0.02em;
-  font-size: 15px;
+  font-size: 14px;
   color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .brandRole {
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--muted);
   font-weight: 500;
+  display: none;
 }
 
 .nav {
-  display: flex;
+  display: none;
   gap: 4px;
   align-items: center;
 }
@@ -113,7 +123,8 @@
 .actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .themeButton {
@@ -121,13 +132,15 @@
   background: var(--surface-2);
   color: var(--text);
   border-radius: 999px;
-  width: 36px;
-  height: 36px;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  min-width: var(--touch-min);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: transform var(--transition), background var(--transition), border-color var(--transition);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .themeButton:hover {
@@ -140,10 +153,11 @@
 }
 
 .ctaButton {
-  display: inline-flex;
+  display: none;
   align-items: center;
   border-radius: 999px;
-  padding: 9px 18px;
+  padding: 10px 18px;
+  min-height: var(--touch-min);
   background: var(--gradient-brand);
   color: #fff;
   font-weight: 600;
@@ -166,14 +180,21 @@
   border: 1px solid var(--border);
   background: var(--surface-2);
   color: var(--text);
-  width: 38px;
-  height: 38px;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  min-width: var(--touch-min);
   border-radius: 12px;
   cursor: pointer;
-  display: none;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: transform var(--transition), background var(--transition);
+  transition: transform var(--transition), background var(--transition), border-color var(--transition);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menuButtonOpen {
+  border-color: var(--border-strong);
+  background: var(--chip-bg);
 }
 
 .menuButton:active {
@@ -181,28 +202,78 @@
 }
 
 .menuIcon {
-  font-size: 17px;
+  font-size: 18px;
   line-height: 1;
 }
 
+.mobileBackdrop {
+  position: fixed;
+  inset: 0;
+  top: var(--nav-height);
+  z-index: 40;
+  background: rgba(7, 11, 20, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 280ms ease, visibility 280ms ease;
+}
+
+.mobileBackdropVisible {
+  opacity: 1;
+  visibility: visible;
+}
+
 .mobileMenu {
-  padding: 6px 20px 18px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 45;
+  padding: 8px var(--section-x) calc(18px + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--border);
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  box-shadow: var(--shadow-lg);
+  max-height: calc(100dvh - var(--nav-height));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition:
+    opacity 280ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 280ms ease;
+}
+
+.mobileMenuOpen {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .mobileLink {
-  display: block;
-  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  padding: 10px 14px;
   margin-top: 4px;
   color: var(--muted);
   font-weight: 600;
   font-size: 15px;
   border-radius: 12px;
-  animation: fadeSlide 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
   transition: color var(--transition), background var(--transition);
+  -webkit-tap-highlight-color: transparent;
 }
 
-.mobileLink:hover {
+.mobileLink:first-of-type {
+  margin-top: 0;
+}
+
+.mobileLink:hover,
+.mobileLink:active {
   color: var(--text);
   background: var(--surface-2);
 }
@@ -210,6 +281,26 @@
 .mobileLinkActive {
   color: var(--primary);
   background: var(--chip-bg);
+}
+
+.mobileCta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min);
+  margin-top: 12px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: var(--gradient-brand);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: var(--glow);
+  transition: transform var(--transition), filter var(--transition);
+}
+
+.mobileCta:active {
+  transform: scale(0.98);
 }
 
 @keyframes slideDown {
@@ -223,31 +314,44 @@
   }
 }
 
-@keyframes fadeSlide {
-  from {
-    opacity: 0;
-    transform: translateX(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
+@media (min-width: 480px) {
+  .brandName {
+    font-size: 15px;
   }
 }
 
-@media (max-width: 880px) {
-  .nav {
-    display: none;
+@media (min-width: 768px) {
+  .inner {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    gap: 16px;
   }
 
-  .ctaButton {
-    display: none;
-  }
-
-  .menuButton {
-    display: inline-flex;
+  .brand {
+    flex: 0 1 auto;
   }
 
   .brandRole {
+    display: block;
+    font-size: 11.5px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .nav {
+    display: flex;
+  }
+
+  .ctaButton {
+    display: inline-flex;
+  }
+
+  .menuButton {
+    display: none;
+  }
+
+  .mobileBackdrop,
+  .mobileMenu {
     display: none;
   }
 }

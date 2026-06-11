@@ -1,7 +1,8 @@
 .app {
   min-height: 100vh;
+  min-height: 100dvh;
   position: relative;
-  overflow: hidden;
+  overflow-x: clip;
 }
 
 /* Aurora ambience — slow drifting gradient orbs behind all content. */
@@ -11,34 +12,34 @@
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  filter: blur(60px);
+  filter: blur(48px);
   will-change: transform;
 }
 
 .app::before {
-  left: -180px;
-  top: -80px;
-  width: 560px;
-  height: 560px;
-  background: radial-gradient(circle at 35% 35%, rgba(37, 99, 235, 0.16), transparent 65%);
+  left: -120px;
+  top: -60px;
+  width: min(360px, 70vw);
+  height: min(360px, 70vw);
+  background: radial-gradient(circle at 35% 35%, rgba(37, 99, 235, 0.14), transparent 65%);
   animation: drift 26s ease-in-out infinite alternate;
 }
 
 .app::after {
-  right: -220px;
-  top: 480px;
-  width: 640px;
-  height: 640px;
-  background: radial-gradient(circle at 40% 30%, rgba(124, 58, 237, 0.13), transparent 60%);
+  right: -140px;
+  top: 320px;
+  width: min(400px, 75vw);
+  height: min(400px, 75vw);
+  background: radial-gradient(circle at 40% 30%, rgba(124, 58, 237, 0.11), transparent 60%);
   animation: drift 32s ease-in-out infinite alternate-reverse;
 }
 
 :global(body[data-theme="dark"]) .app::before {
-  background: radial-gradient(circle at 35% 35%, rgba(37, 99, 235, 0.14), transparent 65%);
+  background: radial-gradient(circle at 35% 35%, rgba(37, 99, 235, 0.12), transparent 65%);
 }
 
 :global(body[data-theme="dark"]) .app::after {
-  background: radial-gradient(circle at 40% 30%, rgba(124, 58, 237, 0.12), transparent 60%);
+  background: radial-gradient(circle at 40% 30%, rgba(124, 58, 237, 0.1), transparent 60%);
 }
 
 /* Subtle dot-grid texture, fades out toward the bottom. */
@@ -47,7 +48,7 @@
   inset: 0;
   pointer-events: none;
   background-image: radial-gradient(rgba(37, 99, 235, 0.1) 1px, transparent 1px);
-  background-size: 28px 28px;
+  background-size: 24px 24px;
   mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.7), transparent 32%);
   -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.7), transparent 32%);
 }
@@ -57,7 +58,7 @@
 }
 
 .main {
-  padding-top: 66px;
+  padding-top: var(--nav-height);
   position: relative;
   z-index: 1;
 }
@@ -76,6 +77,57 @@
     transform: translate3d(0, 0, 0) scale(1);
   }
   to {
-    transform: translate3d(60px, 40px, 0) scale(1.08);
+    transform: translate3d(40px, 28px, 0) scale(1.06);
+  }
+}
+
+@media (min-width: 768px) {
+  .app::before,
+  .app::after {
+    filter: blur(60px);
+  }
+
+  .app::before {
+    left: -180px;
+    top: -80px;
+    width: 560px;
+    height: 560px;
+  }
+
+  .app::after {
+    right: -220px;
+    top: 480px;
+    width: 640px;
+    height: 640px;
+  }
+
+  .gridPattern {
+    background-size: 28px 28px;
+  }
+}
+
+@media (min-width: 1024px) {
+  @keyframes drift {
+    from {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    to {
+      transform: translate3d(60px, 40px, 0) scale(1.08);
+    }
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .app::before,
+  .app::after {
+    animation: none;
+    opacity: 0.85;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app::before,
+  .app::after {
+    animation: none;
   }
 }

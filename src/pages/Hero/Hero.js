@@ -78,6 +78,9 @@ export default function Hero() {
                   className={styles.avatar}
                   src={`${process.env.PUBLIC_URL}/vishuverma.jpeg`}
                   alt={`${profile.name} portrait`}
+                  width="380"
+                  height="475"
+                  decoding="async"
                 />
               </div>
 

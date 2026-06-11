@@ -15,6 +15,18 @@
 
   --gradient-brand: linear-gradient(135deg, #2563eb 0%, #6d4ce0 55%, #7c3aed 100%);
   --gradient-text: linear-gradient(110deg, #2563eb 10%, #7c3aed 55%, #06b6d4 100%);
+
+  /* Responsive layout tokens (mobile-first) */
+  --container-max: 100%;
+  --section-y: 56px;
+  --section-x: 16px;
+  --nav-height: 60px;
+  --touch-min: 44px;
+  --text-base: 1rem;
+  --text-sm: 0.875rem;
+  --text-xs: 0.75rem;
+  --leading-body: 1.65;
+  --leading-heading: 1.12;
 }
 
 :global(*) {
@@ -24,6 +36,7 @@
 :global(html) {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  overflow-x: clip;
 }
 
 :global(body) {
@@ -31,10 +44,12 @@
   font-family: var(--font-sans);
   background: var(--bg, #f5f7fb);
   color: var(--text, #0f172a);
-  line-height: 1.6;
+  line-height: var(--leading-body);
+  font-size: var(--text-base);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
 }
 
 :global(a) {
@@ -44,6 +59,12 @@
 
 :global(button) {
   font-family: inherit;
+}
+
+:global(img) {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
 :global(::selection) {
@@ -100,13 +121,54 @@
   border: 0;
 }
 
+:global(body.navOpen) {
+  overflow: hidden;
+  touch-action: none;
+}
+
+@media (min-width: 480px) {
+  :global(:root) {
+    --section-x: 20px;
+  }
+}
+
+@media (min-width: 768px) {
+  :global(:root) {
+    --section-y: 72px;
+    --section-x: 24px;
+    --container-max: 1140px;
+    --nav-height: 66px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :global(:root) {
+    --section-y: 88px;
+    --section-x: 32px;
+  }
+}
+
+@media (min-width: 1440px) {
+  :global(:root) {
+    --section-y: 96px;
+    --container-max: 1240px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   :global(html) {
     scroll-behavior: auto !important;
   }
+
   :global(*) {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  :global(*) {
+    scroll-behavior: auto;
   }
 }

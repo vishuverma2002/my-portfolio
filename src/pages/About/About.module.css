@@ -1,25 +1,26 @@
 .section {
-  padding: 88px 20px;
-  scroll-margin-top: 72px;
+  padding: var(--section-y) var(--section-x);
+  scroll-margin-top: calc(var(--nav-height) + 8px);
 }
 
 .inner {
-  max-width: 1140px;
+  width: 100%;
+  max-width: var(--container-max);
   margin: 0 auto;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 20px;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
 }
 
 .card {
   border: 1px solid var(--border);
   background: var(--surface);
   border-radius: var(--radius);
-  padding: 24px 22px;
+  padding: 20px 18px;
   box-shadow: var(--shadow-sm);
   transition: transform var(--transition-slow), box-shadow var(--transition), border-color var(--transition);
 }
@@ -34,13 +35,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  font-size: 20px;
+  width: 42px;
+  height: 42px;
+  font-size: 19px;
   border-radius: 13px;
   background: var(--chip-bg);
   border: 1px solid var(--border);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   transition: transform var(--transition);
 }
 
@@ -49,8 +50,8 @@
 }
 
 .cardTitle {
-  margin: 0 0 8px;
-  font-size: 15.5px;
+  margin: 0 0 6px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: -0.015em;
   color: var(--text);
@@ -67,32 +68,32 @@
   border: 1px solid var(--border);
   background: var(--surface);
   border-radius: var(--radius-lg);
-  padding: 28px;
+  padding: 22px 20px;
   box-shadow: var(--shadow-sm);
 }
 
 .journeyTitle {
-  margin: 0 0 22px;
-  font-size: 18px;
+  margin: 0 0 18px;
+  font-size: 17px;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
 .steps {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  grid-template-columns: 1fr;
+  gap: 20px;
 }
 
 .step {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   align-items: flex-start;
 }
 
 .stepIndex {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--primary);
   background: var(--chip-bg);
@@ -103,9 +104,9 @@
 }
 
 .stepTitle {
-  margin: 0 0 5px;
+  margin: 0 0 4px;
   font-weight: 700;
-  font-size: 14.5px;
+  font-size: 14px;
   letter-spacing: -0.01em;
   color: var(--text);
 }
@@ -117,24 +118,53 @@
   line-height: 1.65;
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 480px) {
   .grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 760px) {
-  .section {
-    padding: 64px 20px;
+@media (min-width: 768px) {
+  .grid {
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    padding: 24px 22px;
+  }
+
+  .journey {
+    padding: 28px;
+  }
+
+  .journeyTitle {
+    font-size: 18px;
+    margin-bottom: 22px;
   }
 
   .steps {
-    grid-template-columns: 1fr;
+    gap: 24px;
   }
 }
 
-@media (max-width: 560px) {
+@media (min-width: 1024px) {
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .cardTitle {
+    font-size: 15.5px;
+    margin-bottom: 8px;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .card:hover {
+    transform: none;
   }
 }
