@@ -17,19 +17,61 @@ function scrollToId(id) {
   el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-export default function Navbar() {
-  const { theme, toggleTheme, isDark } = useTheme();
-  const [menuOpen, setMenuOpen] = useState(false);
+function SunIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+    </svg>
+  );
+}
 
+function MoonIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  );
+}
+
+export default function Navbar() {
+  const { toggleTheme, isDark } = useTheme();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeId, setActiveId] = useState("");
+
+  // Scroll progress bar + condensed nav state.
   useEffect(() => {
-    // If user lands with a hash (e.g. #projects), jump smoothly.
-    const { hash } = window.location;
-    if (!hash) return;
-    const id = hash.replace("#", "");
-    if (!id) return;
-    const el = document.getElementById(id);
-    if (!el) return;
-    setTimeout(() => scrollToId(id), 50);
+    function onScroll() {
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - doc.clientHeight;
+      setProgress(max > 0 ? (window.scrollY / max) * 100 : 0);
+      setScrolled(window.scrollY > 12);
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Highlight the section currently in view.
+  useEffect(() => {
+    const sections = navItems
+      .map((item) => document.getElementById(item.id))
+      .filter(Boolean);
+    if (!sections.length || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActiveId(entry.target.id);
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px" }
+    );
+
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
   }, []);
 
   function handleNavClick(e, id) {
@@ -41,18 +83,27 @@ export default function Navbar() {
   }
 
   return (
-    <header className={styles.header}>
+    <header className={`${styles.header} ${scrolled ? styles.headerScrolled : ""}`}>
+      <div className={styles.progressTrack} aria-hidden="true">
+        <div className={styles.progressBar} style={{ width: `${progress}%` }} />
+      </div>
+
       <div className={styles.inner}>
         <a className={styles.brand} href="#top" onClick={(e) => handleNavClick(e, "top")}>
-          <span className={styles.brandName}>{profile.name}</span>
-          <span className={styles.brandRole}>{profile.role}</span>
+          <span className={styles.brandMark} aria-hidden="true">
+            {profile.name.split(" ").map((w) => w[0]).join("")}
+          </span>
+          <span className={styles.brandText}>
+            <span className={styles.brandName}>{profile.name}</span>
+            <span className={styles.brandRole}>{profile.role}</span>
+          </span>
         </a>
 
         <nav className={styles.nav} aria-label="Primary">
           {navItems.map((item) => (
             <a
               key={item.id}
-              className={styles.navLink}
+              className={`${styles.navLink} ${activeId === item.id ? styles.navLinkActive : ""}`}
               href={`#${item.id}`}
               onClick={(e) => handleNavClick(e, item.id)}
             >
@@ -68,8 +119,15 @@ export default function Navbar() {
             onClick={toggleTheme}
             aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
           >
-            {theme === "dark" ? "Dark" : "Light"}
+            {isDark ? <SunIcon /> : <MoonIcon />}
           </button>
+
+          <a
+            className={styles.ctaButton}
+            href={`mailto:${profile.email}`}
+          >
+            Hire Me
+          </a>
 
           <button
             type="button"
@@ -87,10 +145,11 @@ export default function Navbar() {
 
       {menuOpen ? (
         <div className={styles.mobileMenu} role="dialog" aria-label="Mobile navigation">
-          {navItems.map((item) => (
+          {navItems.map((item, idx) => (
             <a
               key={item.id}
-              className={styles.mobileLink}
+              className={`${styles.mobileLink} ${activeId === item.id ? styles.mobileLinkActive : ""}`}
+              style={{ animationDelay: `${idx * 45}ms` }}
               href={`#${item.id}`}
               onClick={(e) => handleNavClick(e, item.id)}
             >
@@ -102,4 +161,3 @@ export default function Navbar() {
     </header>
   );
 }
-

@@ -19,6 +19,18 @@ export default function App() {
   const transitionOverlayRef = useRef(null);
 
   useEffect(() => {
+    // Prevent the browser from restoring the previous scroll position on reload.
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+    // Drop any #section hash so the browser doesn't jump to it on reload.
+    if (window.location.hash) {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     const t = setTimeout(() => setLoading(false), 900);
     return () => clearTimeout(t);
   }, []);
@@ -80,12 +92,11 @@ export default function App() {
       const delay = parseFloat(el.getAttribute("data-reveal-delay") || "0");
       gsap.fromTo(
         el,
-        { opacity: 0, y: 18, scale: 0.99 },
+        { opacity: 0, y: 26 },
         {
           opacity: 1,
           y: 0,
-          scale: 1,
-          duration: 0.65,
+          duration: 0.8,
           ease: "power3.out",
           delay,
           scrollTrigger: {
@@ -104,6 +115,7 @@ export default function App() {
 
   return (
     <div className={styles.app}>
+      <div className={styles.gridPattern} aria-hidden="true" />
       <Preloader loading={loading} />
 
       {transitionVisible ? (

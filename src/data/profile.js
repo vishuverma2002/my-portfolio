@@ -1,17 +1,26 @@
 const profile = {
   name: "Vishu Verma",
-  role: "Full Stack Developer",
-  location: "Muzaffarnagar, UP",
+  role: "Frontend Developer",
+  roles: ["Frontend Developer", "React.js Developer", "Next.js Developer", "JavaScript Developer"],
+  location: "Noida, UP",
   phone: "7906115844",
   email: "vishuverma29122002@gmail.com",
-  linkedin: "https://linkedin.com/in/vishu-verma-680728342",
-  yearsExperience: "2.5 years",
+  linkedin: "https://www.linkedin.com/in/vishu-verma-dev/",
+  github: "https://github.com/vishuverma2002",
+  yearsExperience: "3 years",
   tagline:
-    "Full Stack Developer with 2.5 years of experience building scalable web applications using React.js, JavaScript, and modern UI architecture.",
+    "Frontend Developer with 3 years of experience crafting scalable, high-performance web applications using React.js, Next.js, JavaScript (ES6+), TypeScript, and Redux Toolkit.",
   shortIntro:
-    "I specialize in frontend development and state management with Context API and Redux, while currently expanding into Java, Spring Boot, and Microservices.",
+    "Track record of delivering measurable results — 35% improvement in Core Web Vitals, 25–30% gains in sprint velocity, and sub-200ms REST API response times on platforms serving 200+ concurrent users. Skilled in responsive web design, component-based architecture, code splitting, lazy loading, Webpack optimization, and SEO best practices.",
+  availability: "Immediate Joiner · Open to Hybrid and Remote Opportunities",
+  languages: ["English (Professional Proficiency)", "Hindi (Native)"],
   resumeUrl: "#",
+  stats: [
+    { value: "3+", label: "Years Experience" },
+    { value: "35%", label: "Core Web Vitals Boost" },
+    { value: "200+", label: "Concurrent Users Served" },
+    { value: "<200ms", label: "API Response Times" },
+  ],
 };
 
 export default profile;
-

@@ -8,7 +8,7 @@ export default function TypingText({ strings = [], className, speed = 32, hold =
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const safeStrings = useMemo(() => {
-    if (!strings || !strings.length) return ["Full Stack Developer"];
+    if (!strings || !strings.length) return ["Frontend Developer"];
     return strings.filter(Boolean);
   }, [strings]);
 

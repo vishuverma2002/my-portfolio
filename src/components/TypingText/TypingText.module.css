@@ -5,11 +5,12 @@
 }
 
 .cursor {
-  width: 10px;
-  height: 1.1em;
-  margin-left: 2px;
+  width: 4px;
+  height: 1.05em;
+  margin-left: 4px;
   border-radius: 2px;
-  background: currentColor;
+  /* The headline uses gradient-clipped transparent text, so currentColor would be invisible. */
+  background: var(--primary);
   opacity: 0.9;
   animation: blink 900ms steps(2) infinite;
 }
